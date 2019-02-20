@@ -3,12 +3,11 @@ stacks:
 regions:
 - eu-west-1
 deployments:
-  socialCacheClearing:
+  social-cache-clearing:
     type: aws-lambda
     parameters:
       bucket: ophan-dist
       fileName: social-cache-clearing.jar
-      functionNames: socialCacheClearing
       functions:
         PROD:
           name: socialCacheClearing-PROD
