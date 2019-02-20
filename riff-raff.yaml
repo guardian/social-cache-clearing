@@ -1,12 +1,12 @@
 stacks:
-- content-api
+- ophan
 regions:
 - eu-west-1
 deployments:
   socialCacheClearing:
     type: aws-lambda
     parameters:
-      bucket: content-api-dist
+      bucket: ophan-dist
       functionNames: socialCacheClearing
       functions:
         PROD:
