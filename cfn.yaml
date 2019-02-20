@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Cache-clearing from Twitter and Facebook'
+
+Parameters:
+  App:
+    Description: Application name
+    Type: String
+    Default: social-cache-clearing
+
+
+Resources:
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+        - PolicyName: lambda
+          PolicyDocument:
+            Statement:
+              Effect: Allow
+              Action:
+                - kinesis:DescribeStream
+                - kinesis:GetRecords
+                - kinesis:GetShardIterator
+                - kinesis:ListStreams
+                - lambda:InvokeFunction
+              Resource: '*'
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: social-cache-clearing-PROD
+      Code:
+        S3Bucket: content-api-dist
+        S3Key: content-api/PROD/socialCacheClearing/socialCacheClearing.jar
+      Description: Listens to CAPI kinesis stream and clears content from Twitter and Facebook caches when content is updated
+      Environment:
+        Variables:
+          CAPI_KEY: socialCacheClearing
+      Handler: socialCacheClearing.lambda::handler
+      Runtime: java8
+      Role: !GetAtt ExecutionRole.Arn
+
+  LambdaEventSource:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 100
+      EventSourceArn: !Sub arn:aws:kinesis:eu-west-1:308506855511:stream/content-api-firehose-v2-PROD
+      FunctionName: !Ref Lambda
+      Enabled: true
+      StartingPosition: LATEST

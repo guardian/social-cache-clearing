@@ -1,0 +1,24 @@
+stacks:
+- content-api
+regions:
+- eu-west-1
+deployments:
+  socialCacheClearing:
+    type: aws-lambda
+    parameters:
+      bucket: content-api-dist
+      functionNames: socialCacheClearing
+      functions:
+        PROD:
+          name: social-cache-clearing-PROD
+          filename: socialCacheClearing.jar
+    dependencies:
+    - cfn
+
+  cfn:
+    type: cloud-formation
+    parameters:
+      prependStackToCloudFormationStackName: false
+      cloudFormationStackName: social-cache-clearing
+      cloudFormationStackByTags: false
+      templatePath: cfn.yaml
