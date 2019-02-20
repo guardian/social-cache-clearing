@@ -1,12 +1,12 @@
 stacks:
-- ophan
+- content-api
 regions:
 - eu-west-1
 deployments:
   social-cache-clearing:
     type: aws-lambda
     parameters:
-      bucket: ophan-dist
+      bucket: content-api-dist
       fileName: social-cache-clearing.jar
       functions:
         PROD:
