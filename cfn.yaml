@@ -39,7 +39,7 @@ Resources:
       FunctionName: social-cache-clearing-PROD
       Code:
         S3Bucket: ophan-dist
-        S3Key: ophan/PROD/socialCacheClearing/socialCacheClearing.jar
+        S3Key: ophan/PROD/social-cache-clearing/social-cache-clearing.jar
       Description: Listens to CAPI kinesis stream and clears content from Twitter and Facebook caches when content is updated
       Environment:
         Variables:

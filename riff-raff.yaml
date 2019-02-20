@@ -7,11 +7,12 @@ deployments:
     type: aws-lambda
     parameters:
       bucket: ophan-dist
+      fileName: social-cache-clearing.jar
       functionNames: socialCacheClearing
       functions:
         PROD:
-          name: social-cache-clearing-PROD
-          filename: socialCacheClearing.jar
+          name: socialCacheClearing-PROD
+          filename: social-cache-clearing.jar
     dependencies:
     - cfn
 
