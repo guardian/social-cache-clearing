@@ -20,12 +20,12 @@ object Lambda {
         case EventType.RetrievableUpdate => sendTwitterDecacheRequest(event.payloadId)
         case other => false
       }
-
-      def sendTwitterDecacheRequest(id: String): Boolean = {
-        println(s"sending Twitter decache request for ${id}")
-        true
-      }
     }
 
+  }
+
+  def sendTwitterDecacheRequest(id: String): Boolean = {
+    println(s"sending Twitter decache request for ${id}")
+    true
   }
 }
