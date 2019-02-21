@@ -40,7 +40,7 @@ Resources:
       Code:
         S3Bucket: content-api-dist
         S3Key: content-api/PROD/social-cache-clearing/social-cache-clearing.jar
-      Description: Listens to CAPI kinesis stream and clears content from Twitter and Facebook caches when content is updated
+      Description: Clears content from Twitter and Facebook caches when content is updated
       Environment:
         Variables:
           CAPI_KEY: socialCacheClearing
