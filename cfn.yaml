@@ -39,7 +39,7 @@ Resources:
   Lambda:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: social-cache-clearing-PROD
+      FunctionName: socialCacheClearing-PROD
       Code:
         S3Bucket: content-api-dist
         S3Key: content-api/PROD/social-cache-clearing/social-cache-clearing.jar

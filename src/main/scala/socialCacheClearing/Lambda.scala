@@ -6,7 +6,7 @@ import scala.collection.JavaConverters._
 import com.amazonaws.services.kinesis.clientlibrary.types.UserRecord
 import com.gu.crier.model.event.v1.EventType
 
-object Lambda {
+class Lambda {
   def handler(event: KinesisEvent): Unit = {
 
     val rawRecords: List[Record] = event.getRecords.asScala.map(_.getKinesis).toList
