@@ -6,6 +6,9 @@ Parameters:
     Description: Application name
     Type: String
     Default: social-cache-clearing
+  KinesisStream:
+    Description: Name of the crier kinesis stream
+    Type: String
 
 
 Resources:
@@ -52,7 +55,7 @@ Resources:
     Type: AWS::Lambda::EventSourceMapping
     Properties:
       BatchSize: 100
-      EventSourceArn: !Sub arn:aws:kinesis:eu-west-1:308506855511:stream/content-api-firehose-v2-PROD
+      EventSourceArn: !Sub arn:aws:kinesis:eu-west-1:308506855511:stream/${KinesisStream}
       FunctionName: !Ref Lambda
       Enabled: true
       StartingPosition: LATEST
