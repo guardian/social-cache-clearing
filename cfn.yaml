@@ -47,7 +47,7 @@ Resources:
       Environment:
         Variables:
           CAPI_KEY: socialCacheClearing
-      Handler: socialCacheClearing.lambda::handler
+      Handler: socialCacheClearing.Lambda::handler
       Runtime: java8
       Role: !GetAtt ExecutionRole.Arn
 
@@ -55,7 +55,7 @@ Resources:
     Type: AWS::Lambda::EventSourceMapping
     Properties:
       BatchSize: 100
-      EventSourceArn: !Sub arn:aws:kinesis:eu-west-1:308506855511:stream/${KinesisStream}
+      EventSourceArn: !Sub arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/${KinesisStream}
       FunctionName: !Ref Lambda
       Enabled: true
       StartingPosition: LATEST
