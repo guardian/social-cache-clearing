@@ -19,6 +19,7 @@ deployments:
     type: cloud-formation
     parameters:
       prependStackToCloudFormationStackName: false
+      appendStageToCloudFormationStackName: false
       cloudFormationStackName: social-cache-clearing
       cloudFormationStackByTags: false
       templatePath: cfn.yaml
