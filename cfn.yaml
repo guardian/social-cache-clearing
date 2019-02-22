@@ -1,54 +1,31 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Cache-clearing from Twitter and Facebook'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Cache-clearing from Twitter and Facebook
 
 Parameters:
-  App:
-    Description: Application name
-    Type: String
-    Default: social-cache-clearing
   KinesisStream:
     Description: Name of the crier kinesis stream
     Type: String
 
-
 Resources:
-  ExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      Path: /
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole  # Managed Policy that includes CloudWatch log permissions
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaKinesisExecutionRole
-
   Lambda:
-    Type: AWS::Lambda::Function
+    Type: AWS::Serverless::Function
     Properties:
       FunctionName: socialCacheClearing-PROD
-      Code:
-        S3Bucket: content-api-dist
-        S3Key: content-api/PROD/social-cache-clearing/social-cache-clearing.jar
       Description: Clears content from Twitter and Facebook caches when content is updated
-      Environment:
-        Variables:
-          CAPI_KEY: socialCacheClearing
-      Handler: socialCacheClearing.Lambda::handler
       Runtime: java8
-      Role: !GetAtt ExecutionRole.Arn
-
-
-
-  LambdaEventSource:
-    Type: AWS::Lambda::EventSourceMapping
-    Properties:
-      BatchSize: 100
-      EventSourceArn: !Sub arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/${KinesisStream}
-      FunctionName: !Ref Lambda
-      Enabled: true
-      StartingPosition: LATEST
+      Handler: socialCacheClearing.Lambda::handler
+      MemorySize: 1024
+      Timeout: 15
+      Events:
+        Stream:
+          Type: Kinesis
+          Properties:
+            Stream: !Sub arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/${KinesisStream}
+            StartingPosition: LATEST
+      CodeUri:
+        Bucket: content-api-dist
+        Key: content-api/PROD/social-cache-clearing/social-cache-clearing.jar
+      Policies:
+        - AWSLambdaBasicExecutionRole  # Managed Policy that includes CloudWatch log permissions
+        - AWSLambdaKinesisExecutionRole
