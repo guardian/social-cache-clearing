@@ -12,30 +12,6 @@ Parameters:
 
 
 Resources:
-  ExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      Path: /
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-              - lambda.amazonaws.com
-          Action: sts:AssumeRole
-      Policies:
-        - PolicyName: lambda
-          PolicyDocument:
-            Statement:
-              Effect: Allow
-              Action:
-                - kinesis:DescribeStream
-                - kinesis:GetRecords
-                - kinesis:GetShardIterator
-                - kinesis:ListStreams
-                - lambda:InvokeFunction
-              Resource: '*'
-
   Lambda:
     Type: AWS::Lambda::Function
     Properties:
@@ -49,7 +25,9 @@ Resources:
           CAPI_KEY: socialCacheClearing
       Handler: socialCacheClearing.Lambda::handler
       Runtime: java8
-      Role: !GetAtt ExecutionRole.Arn
+      Policies:
+        - AWSLambdaBasicExecutionRole  # Managed Policy that includes CloudWatch log permissions
+        - AWSLambdaKinesisExecutionRole
 
   LambdaEventSource:
     Type: AWS::Lambda::EventSourceMapping
