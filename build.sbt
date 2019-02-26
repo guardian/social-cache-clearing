@@ -12,7 +12,9 @@ libraryDependencies ++= Seq(
   "com.amazonaws" % "amazon-kinesis-client" % "1.9.3",
   "com.twitter" %% "scrooge-core" % "4.18.0",
   "com.gu" %% "thrift-serializer" % "3.0.0",
-  "com.gu" %% "content-api-models-scala" % "12.16"
+  "com.gu" %% "content-api-models-scala" % "12.16",
+  "com.amazonaws" % "aws-java-sdk" % "1.11.505",
+  "org.scalaj" %% "scalaj-http" % "2.4.1"
 )
 
 enablePlugins(RiffRaffArtifact)
