@@ -26,37 +26,17 @@ Resources:
       CodeUri:
         Bucket: content-api-dist
         Key: content-api/PROD/social-cache-clearing/social-cache-clearing.jar
-      Role: !GetAtt SocialCacheClearingRole.Arn
-
-  SocialCacheClearingRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - 'lambda.amazonaws.com'
-            Action:
-              - 'sts:AssumeRole'
-      ManagedPolicyArns:
+      Policies:
         - AWSLambdaBasicExecutionRole # Managed Policy that includes CloudWatch log permissions
         - AWSLambdaKinesisExecutionRole
-      Policies:
-        - PolicyName: 'ParameterStoreAccess'
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - ssm:GetParameter*
-                Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/social-cache-clearing/*
-        - PolicyName: 'ParameterDecryption'
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - kms:Decrypt
-                Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/c8e1f268-d291-46ec-aa96-a6b049298303
+        - Statement:
+            Effect: Allow
+            Action:
+              - ssm:GetParameter*
+            Resource:
+              - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/social-cache-clearing/*
+        - Statement:
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/c8e1f268-d291-46ec-aa96-a6b049298303
