@@ -7,13 +7,13 @@ version := "0.1"
 scalaVersion := "2.12.8"
 
 libraryDependencies ++= Seq(
+  "com.amazonaws" % "aws-java-sdk-ssm" % "1.11.505",
   "com.amazonaws" % "aws-lambda-java-core" % "1.2.0",
   "com.amazonaws" % "aws-lambda-java-events" % "2.1.0",
   "com.amazonaws" % "amazon-kinesis-client" % "1.9.3",
   "com.twitter" %% "scrooge-core" % "4.18.0",
   "com.gu" %% "thrift-serializer" % "3.0.0",
   "com.gu" %% "content-api-models-scala" % "12.16",
-  "com.amazonaws" % "aws-java-sdk" % "1.11.505",
   "org.scalaj" %% "scalaj-http" % "2.4.1"
 )
 
