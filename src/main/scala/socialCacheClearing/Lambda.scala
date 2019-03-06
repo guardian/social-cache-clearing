@@ -45,7 +45,7 @@ object FacebookClient {
     new GetParameterRequest()
     .withName("/social-cache-clearing/facebook-access-token")
     .withWithDecryption(true)
-      .withRequestCredentialsProvider(new ProfileCredentialsProvider("capi"))
+    .withRequestCredentialsProvider(new ProfileCredentialsProvider("capi"))
   ).getParameter.getValue
 
   def scrapeForId(id: String) = {
