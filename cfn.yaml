@@ -41,7 +41,7 @@ Resources:
             Action:
               - 'sts:AssumeRole'
       ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole' # Managed Policy that includes CloudWatch log permissions
+        - AWSLambdaBasicExecutionRole # Managed Policy that includes CloudWatch log permissions
         - AWSLambdaKinesisExecutionRole
       Policies:
         - PolicyName: 'ParameterStoreAccess'
@@ -50,13 +50,13 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - 'ssm:GetParameter*'
-                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/social-cache-clearing*'
+                  - ssm:GetParameter*
+                Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/social-cache-clearing/*
         - PolicyName: 'ParameterDecryption'
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
               - Effect: Allow
                 Action:
-                  - 'kms:Decrypt'
-                Resource: !Sub 'arn:aws:${AWS::Region}:${AWS::AccountId}:key/c8e1f268-d291-46ec-aa96-a6b049298303'
+                  - kms:Decrypt
+                Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/c8e1f268-d291-46ec-aa96-a6b049298303
