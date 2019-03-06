@@ -1,5 +1,6 @@
 package socialCacheClearing
 
+import com.amazonaws.auth.{AWSCredentialsProviderChain, InstanceProfileCredentialsProvider}
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.kinesis.clientlibrary.types.UserRecord
@@ -37,15 +38,28 @@ class Lambda {
   }
 }
 
+object Main extends App {
+  val id = args.head
+
+  FacebookClient.scrapeForId(id)
+}
+
 object FacebookClient {
-  val ssmClient = AWSSimpleSystemsManagementClientBuilder.standard()
-    .withRegion(Regions.EU_WEST_1).build()
+  val credentialsProvider = new AWSCredentialsProviderChain(
+    new InstanceProfileCredentialsProvider(false),
+    new ProfileCredentialsProvider("capi")
+  )
+
+  val ssmClient = AWSSimpleSystemsManagementClientBuilder
+    .standard()
+    .withCredentials(credentialsProvider)
+    .withRegion(Regions.EU_WEST_1)
+    .build()
 
   val accessToken = ssmClient.getParameter(
     new GetParameterRequest()
     .withName("/social-cache-clearing/facebook-access-token")
     .withWithDecryption(true)
-    .withRequestCredentialsProvider(new ProfileCredentialsProvider("capi"))
   ).getParameter.getValue
 
   def scrapeForId(id: String) = {
