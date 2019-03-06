@@ -1,6 +1,6 @@
 package socialCacheClearing
 
-import com.amazonaws.auth.{AWSCredentialsProviderChain, InstanceProfileCredentialsProvider}
+import com.amazonaws.auth.{AWSCredentialsProviderChain, EnvironmentVariableCredentialsProvider, InstanceProfileCredentialsProvider}
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.kinesis.clientlibrary.types.UserRecord
@@ -46,6 +46,7 @@ object Main extends App {
 
 object FacebookClient {
   val credentialsProvider = new AWSCredentialsProviderChain(
+    new EnvironmentVariableCredentialsProvider(),
     new InstanceProfileCredentialsProvider(false),
     new ProfileCredentialsProvider("capi")
   )
