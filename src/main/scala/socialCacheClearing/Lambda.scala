@@ -28,7 +28,7 @@ class Lambda {
     val sharedUrls = OphanReferralsAPI.twitterReferralsForIds(idsForUpdateEvents)
     println(s"Twitter referrals: ${Await.result(sharedUrls, duration.Duration.Inf)}")
 
-    val twitterRefreshResponses = OphanReferralsAPI.twitterReferralsForIds(idsForUpdateEvents).flatMap(TwitterClient.refreshForSharedUrls).map(_.map(_.url_resolution_status))
+    val twitterRefreshResponses = sharedUrls.flatMap(TwitterClient.refreshForSharedUrls).map(_.map(_.url_resolution_status))
     println(s"${Await.result(twitterRefreshResponses, duration.Duration.Inf)}")
   }
 }
@@ -44,6 +44,9 @@ object Main extends App {
   val testSharedUris = OphanReferralsAPI.twitterReferralsForIds(testCAPIIDs)
   println(s"Twitter referrals: ${Await.result(testSharedUris, duration.Duration.Inf)}")
 
+  val testTwitterRefreshResponses = testSharedUris.flatMap(TwitterClient.refreshForSharedUrls).map(_.map(_.url_resolution_status))
+  println(s"${Await.result(testTwitterRefreshResponses, duration.Duration.Inf)}")
+  
 //  val testUrl = "https://www.theguardian.com/info/2019/mar/08/has-mary-wollstonecrafts-cpu-spiked"
 //  println(Await.result(TwitterClient.restClient.refresh(testUrl), duration.Duration.Inf))
 }
