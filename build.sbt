@@ -15,7 +15,9 @@ libraryDependencies ++= Seq(
   "com.gu" %% "thrift-serializer" % "3.0.0",
   "com.gu" %% "content-api-client-default" % "15.4",
   "com.gu" %% "content-api-models-json" % "15.4",
-  "org.scalaj" %% "scalaj-http" % "2.4.1"
+  "org.scalaj" %% "scalaj-http" % "2.4.1",
+  "com.danielasfregola" %% "twitter4s" % "6.2",
+  "com.typesafe.play" %% "play-json" % "2.7.3"
 )
 
 enablePlugins(RiffRaffArtifact)

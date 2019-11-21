@@ -4,6 +4,9 @@ import java.time.Duration.ofMinutes
 import java.time.Instant
 import java.time.Instant.ofEpochMilli
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl.model.HttpRequest
+import akka.stream.ActorMaterializer
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, EnvironmentVariableCredentialsProvider, InstanceProfileCredentialsProvider}
 import com.amazonaws.regions.Regions
@@ -12,6 +15,8 @@ import com.amazonaws.services.kinesis.model.Record
 import com.amazonaws.services.lambda.runtime.events.KinesisEvent
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
+import com.danielasfregola.twitter4s.{TwitterRefreshClient, TwitterRestClient}
+import com.danielasfregola.twitter4s.entities.{AccessToken, ConsumerToken}
 import com.gu.contentapi.client.model.ItemQuery
 import com.gu.contentapi.client.model.v1.Content
 import com.gu.contentapi.client.{ContentApiClient, GuardianContentClient}
@@ -22,7 +27,7 @@ import scalaj.http.Http
 
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{Await, Future, duration}
 import scala.math.Ordering.Implicits._
 import scala.util.parsing.json.JSONFormat
 
@@ -37,11 +42,9 @@ class Lambda {
 
     println(s"Processing ${userRecords.size} records ...")
 
-    val idsForUpdateEvents: Set[String] = Await.result(updateEventIds(userRecords), scala.concurrent.duration.Duration.Inf)
+    val idsForUpdateEvents: Set[String] = Await.result(updateEventIds(userRecords), duration.Duration.Inf)
 
     println(s"Recently updated content ids: $idsForUpdateEvents")
-
-    idsForUpdateEvents.foreach(FacebookClient.scrapeForId)
   }
 
   def retrieveContent(retrievableContent: RetrievableContent): Future[Option[Content]] = {
@@ -89,18 +92,17 @@ class Lambda {
 
 object Credentials {
   val credentialsProvider = new AWSCredentialsProviderChain(
-    new EnvironmentVariableCredentialsProvider(),
     new InstanceProfileCredentialsProvider(false),
     new ProfileCredentialsProvider("capi")
   )
 
-  val ssmClient = AWSSimpleSystemsManagementClientBuilder
+  val systemsManagerClient = AWSSimpleSystemsManagementClientBuilder
     .standard()
     .withCredentials(credentialsProvider)
     .withRegion(Regions.EU_WEST_1)
     .build()
 
-  def getCredential(name: String) = ssmClient.getParameter(
+  def getCredential(name: String) = systemsManagerClient.getParameter(
     new GetParameterRequest()
       .withName("/social-cache-clearing/"+name)
       .withWithDecryption(true)
@@ -108,13 +110,27 @@ object Credentials {
 }
 
 object Main extends App {
-  val id = args.head
+  private val client = TwitterClient.restClient
 
-  FacebookClient.scrapeForId(id)
+  val testUrl = "https://www.theguardian.com/info/2019/mar/08/has-mary-wollstonecrafts-cpu-spiked"
+
+  println(Await.result(TwitterClient.restClient.refresh(testUrl), duration.Duration.Inf))
 }
 
 object TwitterClient {
+  val consumerToken = {
+    val Array(key,secret) = Credentials.getCredential("twitter/consumer-key").split(':')
+    ConsumerToken(key,secret)
+  }
 
+  val accessToken = {
+    val Array(key,secret) = Credentials.getCredential("twitter/access-token").split(':')
+    AccessToken(key,secret)
+  }
+
+  val restClient = new TwitterRefreshClient(consumerToken, accessToken)
+
+//  val restClient = TwitterRestClient(consumerToken, accessToken)
 }
 
 object FacebookClient {
