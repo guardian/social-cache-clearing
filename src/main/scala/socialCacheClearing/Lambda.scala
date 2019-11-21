@@ -93,7 +93,8 @@ class Lambda {
 object Credentials {
   val credentialsProvider = new AWSCredentialsProviderChain(
     new InstanceProfileCredentialsProvider(false),
-    new ProfileCredentialsProvider("capi")
+    new ProfileCredentialsProvider("capi"),
+    new EnvironmentVariableCredentialsProvider
   )
 
   val systemsManagerClient = AWSSimpleSystemsManagementClientBuilder
