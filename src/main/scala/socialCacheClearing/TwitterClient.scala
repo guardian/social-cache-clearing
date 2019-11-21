@@ -1,7 +1,9 @@
 package socialCacheClearing
 
-import com.danielasfregola.twitter4s.TwitterRefreshClient
+import com.danielasfregola.twitter4s.{RefreshResponse, TwitterRefreshClient}
 import com.danielasfregola.twitter4s.entities.{AccessToken, ConsumerToken}
+
+import scala.concurrent.Future
 
 object TwitterClient {
   val consumerToken = {
@@ -15,4 +17,8 @@ object TwitterClient {
   }
 
   val restClient = new TwitterRefreshClient(consumerToken, accessToken)
+
+  def refreshForSharedUrl(url: String): Future[RefreshResponse] = {
+    restClient.refresh(url)
+  }
 }
