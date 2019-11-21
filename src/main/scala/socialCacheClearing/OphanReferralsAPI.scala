@@ -46,7 +46,7 @@ object OphanReferralsAPI {
     } yield referralCounts
   }
 
-  def sharedUrisForIds(ids: Set[String]): Future[Seq[ReferralCount]] = {
+  def sharedUrisForIds(ids: Set[String]): Future[Set[ReferralCount]] = {
     Future.traverse(ids)(twitterReferrals).map(_.flatten)
   }
 
