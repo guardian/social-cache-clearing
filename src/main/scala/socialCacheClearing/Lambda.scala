@@ -43,8 +43,11 @@ class Lambda {
     println(s"Processing ${userRecords.size} records ...")
 
     val idsForUpdateEvents: Set[String] = Await.result(updateEventIds(userRecords), duration.Duration.Inf)
-
     println(s"Recently updated content ids: $idsForUpdateEvents")
+
+    val sharedUris = OphanReferralsAPI.sharedUrisForIds(idsForUpdateEvents)
+
+    println(s"Twitter referrals: ${Await.result(sharedUris, duration.Duration.Inf)}")
   }
 
   def retrieveContent(retrievableContent: RetrievableContent): Future[Option[Content]] = {
@@ -130,8 +133,6 @@ object TwitterClient {
   }
 
   val restClient = new TwitterRefreshClient(consumerToken, accessToken)
-
-//  val restClient = TwitterRestClient(consumerToken, accessToken)
 }
 
 object FacebookClient {
