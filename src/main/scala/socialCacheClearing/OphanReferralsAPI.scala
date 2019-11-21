@@ -20,7 +20,7 @@ object OphanReferralsAPI {
   def twitterReferrals(capiId: String): Future[Seq[ReferralCount]] = {
     implicit val reads: Reads[ReferralCount] = Json.reads[ReferralCount]
 
-    val uri = uri"https://ophan.dashboard.co.uk/api/twitter/referrals?path=${slashPrefixedPath(capiId)}&api-key=$apiKey"
+    val uri = uri"https://api.ophan.co.uk/api/twitter/referrals?path=${slashPrefixedPath(capiId)}&api-key=$apiKey"
 
     def referralCounts(response: String): Future[Seq[ReferralCount]] = {
       Json.parse(response).validate[Seq[ReferralCount]] match {
@@ -46,9 +46,9 @@ object OphanReferralsAPI {
     } yield referralCounts
   }
 
-  def sharedUrisForIds(ids: Set[String]): Future[Set[ReferralCount]] = {
+  def twitterReferralsForIds(ids: Set[String]): Future[Set[String]] = {
     println(s"Calling Ophan for ids: $ids")
-    Future.traverse(ids)(twitterReferrals).map(_.flatten)
+    Future.traverse(ids)(twitterReferrals).map(_.flatten).map(_.map(_.item))
   }
 
   case class JsonParsingError(errors: Seq[JsonValidationError]) extends Throwable
